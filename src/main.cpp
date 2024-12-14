@@ -6,6 +6,13 @@
 
 Adafruit_MPU6050 mpu;
 
+// Variables para los cálculos
+float roll = 0, pitch = 0;       // Ángulos calculados (en grados)
+float angleZ = 0;               // Ángulo acumulado en el eje Z (en grados)
+float alpha = 0.98;             // Peso del filtro complementario
+unsigned long lastTime = 0;     // Para calcular el intervalo de tiempo entre lecturas
+
+
 void setup(void) {
   Serial.begin(115200);
   while (!Serial)
