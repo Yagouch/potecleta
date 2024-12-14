@@ -90,13 +90,45 @@ void setup(void) {
 
   Serial.println("");
   delay(100);
+  lastTime = millis(); // Inicializa el tiempo inicial
 }
 
 void loop() {
 
+  // **CÁLCULO DEL TIEMPO TRANSCURRIDO (dt)**
+  unsigned long currentTime = millis(); // Obtiene el tiempo actual
+  float dt = (currentTime - lastTime) / 1000.0; // Intervalo de tiempo en segundos
+  lastTime = currentTime; // Actualiza el tiempo de la última lectura
+
   /* Get new sensor events with the readings */
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
+  // Lecturas del acelerómetro (en m/s^2)
+  float accX = a.acceleration.x;
+  float accY = a.acceleration.y;
+  float accZ = a.acceleration.z;
+
+  // Lecturas del giroscopio (en rad/s, se convierten a grados/s)
+  float gyroX = g.gyro.x * 180 / PI;
+  float gyroY = g.gyro.y * 180 / PI;
+  float gyroZ = g.gyro.z * 180 / PI;
+
+  // Cálculo de ángulos con el acelerómetro
+  float accPitch = atan2(-accX, sqrt(accY * accY + accZ * accZ)) * 180 / PI;
+  float accRoll = atan2(accY, sqrt(accX * accX + accZ * accZ)) * 180 / PI;
+
+  // **USO DE dt EN EL FILTRO COMPLEMENTARIO**
+  pitch = alpha * (pitch + gyroY * dt) + (1 - alpha) * accPitch; // Filtro para el eje Pitch
+  roll = alpha * (roll + gyroX * dt) + (1 - alpha) * accRoll;    // Filtro para el eje Roll
+
+  // **USO DE dt EN EL ÁNGULO ACUMULADO Z**
+  angleZ += gyroZ * dt; // Acumula el ángulo en el eje Z
+
+  // Imprimir los resultados calculados
+  Serial.print("Pitch: "); Serial.print(pitch);
+  Serial.print(" | Roll: "); Serial.print(roll);
+  Serial.print(" | Ángulo acumulado Z: "); Serial.print(angleZ);
+  Serial.println(" grados");
 
   /* Print out the values */
   Serial.print("Acceleration X: ");
