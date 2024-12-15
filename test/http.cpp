@@ -1,14 +1,22 @@
 // Esta es la librería para utilizar las funciones de red del ESP8266
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 
-// Datos acceso AP Terrassa
-const char* ssid = "Projectes";
-const char* password = "Petrux10";
+// // Datos acceso AP Terrassa
+// const char* ssid = "Projectes";
+// const char* password = "Petrux10";
+
+// const char* host = "147.83.83.21";
+// const int httpPort = 8080;
+// // Token Provider
+// const char* token = "56aaec441eb7e77f5668c6cff7455251a4bb96572423b385ff20beeeeab0d872";
+
+const char* ssid = "MOVISTAR_D84E";
+const char* password = ";9o2a3ei5RY#!:";
 
 const char* host = "147.83.83.21";
 const int httpPort = 8080;
-// Token Provider
-const char* token = "*******";
+
+const char* token = "56aaec441eb7e77f5668c6cff7455251a4bb96572423b385ff20beeeeab0d872";
 
 
 void setup() {
@@ -60,7 +68,7 @@ void loop() {
   float temp_value = randNumber/10.0;
   
   // Construcción 'parcial' del mensaje HTTP para realizar la publicación de la medida
-  String url = "http://147.83.83.21:8080/data/grup_5-101@prov";
+  String url = "http://147.83.83.21:8080/data/grup_5-101@id_PEgrup5/temperature/";
   url += temp_value;
   
   // log en consola
